@@ -1,0 +1,113 @@
+/* General Styles */
+/* body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+  } */
+  
+  .rescuer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .rescuer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .rescuer-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .action-button {
+    background-color: #fff;
+    color: #4caf50;
+    border: 1px solid #4caf50;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .action-button:hover {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+  .logout-button {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .logout-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Table Styles */
+  .rescuer-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .rescuer-table th,
+  .rescuer-table td {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .rescuer-table th {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .rescuer-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .rescuer-table tr:hover {
+    background-color: #ddd;
+  }
+  
+  .rescue-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+  }
+  
+  /* Action Cell */
+  .rescue-action {
+    text-align: center;
+    font-weight: bold;
+    color: #f44336;
+  }
+  
+  .rescue-action:contains("✔") {
+    color: #4caf50;
+  }
+  
+  /* Footer Styles */
+  .rescuer-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #777;
+  }
+  
