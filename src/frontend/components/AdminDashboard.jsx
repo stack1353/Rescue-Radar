@@ -1,81 +1,151 @@
-import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-// Fix marker icon issue with Leaflet
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-});
+const AdminDashboard = () => {
+  const [reports, setReports] = useState([]);
+  const [error, setError] = useState(null);
 
-const AdminDashboard = ({ reports = [] }) => {
+  // Fetch reports when the component mounts
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/report");
+        setReports(response.data);
+      } catch (err) {
+        setError("Failed to fetch reports");
+      }
+    };
+
+    fetchReports();
+  }, []);
+
+  // Handle deleting a report
+  const handleComplete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/report/${id}`);
+      // Remove the report from the UI after deletion
+      setReports((prevReports) => prevReports.filter((report) => report._id !== id));
+    } catch (err) {
+      setError("Failed to delete report");
+    }
+  };
+
   return (
-    <div>
+    <div className="admin-dashboard">
       <h1>Admin Dashboard</h1>
-      {reports.length === 0 ? (
-        <p>No reports available</p>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      {error && <p className="error">{error}</p>}
+      <div className="table-container">
+        <table className="reports-table">
           <thead>
-            <tr style={{ backgroundColor: "#007bff", color: "white" }}>
+            <tr>
               <th>ID</th>
               <th>Photo</th>
               <th>Wound Details</th>
               <th>Location</th>
               <th>Reported At</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {reports.map((report) => (
-              <tr key={report.id} style={{ textAlign: "center" }}>
-                <td>{report.id}</td>
+              <tr key={report._id}>
+                <td>{report._id}</td>
                 <td>
-                  {report.photo ? (
-                    <img
-                      src={report.photo}
-                      alt="Report"
-                      style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                    />
-                  ) : (
-                    "No Photo"
-                  )}
+                  <img
+                    src={`http://localhost:5000/${report.photo}`}
+                    alt="Report Photo"
+                    className="report-photo"
+                  />
                 </td>
-                <td>{report.woundDetails || "No Details"}</td>
+                <td>{report.woundDetails}</td>
                 <td>
-                  {report.location?.lat && report.location?.lon ? (
-                    <div>
-                      <p>
-                        Latitude: {report.location.lat}, Longitude: {report.location.lon}
-                      </p>
-                      <MapContainer
-                        center={[report.location.lat, report.location.lon]}
-                        zoom={13}
-                        style={{ height: "200px", width: "300px", margin: "auto" }}
-                      >
-                        <TileLayer
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        />
-                        <Marker position={[report.location.lat, report.location.lon]}>
-                          <Popup>
-                            Location: {report.location.lat}, {report.location.lon}
-                          </Popup>
-                        </Marker>
-                      </MapContainer>
-                    </div>
-                  ) : (
-                    "Unknown Location"
-                  )}
+                  Lat: {report.location.lat}, Lon: {report.location.lon}
                 </td>
                 <td>{new Date(report.reportedAt).toLocaleString()}</td>
+                <td>
+                  <button
+                    className="complete-btn"
+                    onClick={() => handleComplete(report._id)}
+                  >
+                    Complete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      )}
+      </div>
+      <style jsx>{`
+        .admin-dashboard {
+          padding: 20px;
+          background-color: #f9f9f9;
+          min-height: 100vh;
+        }
+
+        h1 {
+          font-size: 2rem;
+          margin-bottom: 20px;
+          color: #333;
+        }
+
+        .table-container {
+          overflow-x: auto;
+        }
+
+        .reports-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+          background-color: #fff;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .reports-table th,
+        .reports-table td {
+          padding: 12px;
+          text-align: center;
+          border: 1px solid #ddd;
+        }
+
+        .reports-table th {
+          background-color: #007bff;
+          color: white;
+          font-weight: bold;
+        }
+
+        .reports-table td {
+          background-color: #f9f9f9;
+        }
+
+        .reports-table tr:nth-child(even) td {
+          background-color: #f1f1f1;
+        }
+
+        .report-photo {
+          width: 100px;
+          height: auto;
+          border-radius: 5px;
+        }
+
+        .error {
+          color: red;
+          font-weight: bold;
+          margin-bottom: 20px;
+        }
+
+        .complete-btn {
+          padding: 8px 16px;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        .complete-btn:hover {
+          background-color: #218838;
+        }
+      `}</style>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import axios from "axios"; // Import Axios for API requests
 
 const Rescuer = ({ isOpen, onClose }) => {
   const [rescuerName, setRescuerName] = useState("");
+  const [email, setEmail] = useState(""); // New state for email
   const [contact, setContact] = useState("");
   const [availability, setAvailability] = useState("Available");
   const [category, setCategory] = useState("Domestic");
@@ -34,13 +35,14 @@ const Rescuer = ({ isOpen, onClose }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!rescuerName || !contact || !subcategory) {
+    if (!rescuerName || !email || !contact || !subcategory) {
       alert("Please fill in all the required fields.");
       return;
     }
 
     const rescuerData = {
       rescuerName,
+      email, // Include email in the submission
       contact,
       availability,
       category,
@@ -77,6 +79,18 @@ const Rescuer = ({ isOpen, onClose }) => {
               value={rescuerName}
               onChange={(e) => setRescuerName(e.target.value)}
               placeholder="Enter your name"
+              required
+            />
+          </div>
+
+          {/* Email */}
+          <div style={popupStyles.field}>
+            <label>Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
               required
             />
           </div>

@@ -34,8 +34,8 @@ const RescuersPage = () => {
               <th>Category</th>
               <th>Subcategory</th>
               <th>Location</th>
-              <th>Status</th>
-              <th>Action</th>
+              {/* <th>Status</th>
+              <th>Action</th> */}
             </tr>
           </thead>
           <tbody>
@@ -49,8 +49,8 @@ const RescuersPage = () => {
                 <td>
                   Lat: {rescue.location.lat}, Lon: {rescue.location.lon}
                 </td>
-                <td>{rescue.status}</td>
-                <td>{rescue.action}</td>
+                {/* <td>{rescue.status}</td>
+                <td>{rescue.action}</td> */}
               </tr>
             ))}
           </tbody>

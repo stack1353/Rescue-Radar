@@ -38,9 +38,9 @@ const AboutUsPage = () => {
           Rescue Radar is powered by a passionate team of animal lovers, dedicated to making a difference one rescue at a time.
         </p>
         <ul className="team-list">
-          <li className="team-member">John Doe - Founder</li>
-          <li className="team-member">Jane Smith - Operations Manager</li>
-          <li className="team-member">Alex Johnson - Outreach Coordinator</li>
+          <li className="team-member">Bharat D - Founder</li>
+          <li className="team-member">Abhishek M  - Operations Manager</li>
+          <li className="team-member">Bagesh T - Outreach Coordinator</li>
         </ul>
       </section>
 
