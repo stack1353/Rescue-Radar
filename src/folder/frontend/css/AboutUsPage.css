@@ -1,0 +1,132 @@
+/* General Styles */
+/* body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+  } */
+  
+  .about-us-page {
+    padding: 20px;
+  }
+  
+  /* Header Section */
+  .about-header {
+    text-align: center;
+    background-color: #6fcf97;
+    color: white;
+    padding: 20px 0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .header-title {
+    font-size: 2.5em;
+    margin: 0;
+  }
+  
+  .header-description {
+    font-size: 1.2em;
+    margin-top: 10px;
+  }
+  
+  /* Mission Section */
+  .mission-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mission-title {
+    font-size: 2em;
+    color: #333;
+  }
+  
+  .mission-description {
+    font-size: 1.2em;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+  
+  /* Vision Section */
+  .vision-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  .vision-title {
+    font-size: 2em;
+    color: #333;
+  }
+  
+  .vision-description {
+    font-size: 1.2em;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+  
+  /* Team Section */
+  .team-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .team-title {
+    font-size: 2em;
+    color: #333;
+    text-align: center;
+  }
+  
+  .team-description {
+    font-size: 1.2em;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  
+  .team-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .team-member {
+    background: #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    flex: 1;
+    max-width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Footer Section */
+  .about-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background: #333;
+    color: white;
+    border-radius: 8px;
+  }
+  
+  .footer-text {
+    margin: 5px 0;
+  }
+  
+  .footer-credits {
+    margin: 5px 0;
+    font-size: 0.9em;
+  }
+  
