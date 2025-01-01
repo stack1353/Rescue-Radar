@@ -11,6 +11,7 @@ import Rescuer from "./Rescuer";
 import dog from "../assets/dog_img1.png"
 import bird from "../assets/bird_img1.png"
 import snake from "../assets/snake_img1.png"
+import illust from "../assets/illust.png"
 const AnimalRescueLanding = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isRescuerPopupOpen, setIsRescuerPopupOpen] = useState(false);
@@ -25,7 +26,7 @@ const AnimalRescueLanding = () => {
             Every life matters—rescuing one animal won’t change the world, but it will change the world for that one
             animal. Join us in making a difference, one rescue at a time.
           </h1>
-          <p className="subtext">Quest for Animal Rescue and Sanctuary</p>
+          {/* <p className="subtext">Quest for Animal Rescue and Sanctuary</p> */}
 
         </div>
         <div className="buttons">
@@ -46,13 +47,12 @@ const AnimalRescueLanding = () => {
       <Rescuer
         isOpen={isRescuerPopupOpen} // Pass visibility state
         onClose={() => setIsRescuerPopupOpen(false)} // Close handler
-      />
+      /> <div className="illustration-container">
+      <img className="illustration" src={illust} alt="Animal Rescue Illustration" />
+    </div>    
      
         </div>
-        {/* <div className="illustration-container">
-          <img className="illustration" src="rescue-illustration.png" alt="Animal Rescue Illustration" />
-        </div> */}
-         
+            
       </main>
       <section className="rescue-section">
       <div className="rescue-left">

@@ -6,10 +6,11 @@ import ServicePage from "./frontend/components/ServicePage";
 import AboutUsPage from "./frontend/components/AboutUsPage";
 import Register from "./frontend/components/Register";
 import RescuerPage from "./frontend/components/RescuerPage"
+import TeamPage from "./frontend/components/TeamPage";
 // import About from "./About";
 // import Services from "./Services";
 // import Gallery from "./Gallery";
-// import Team from "./Team";
+
  
 const Approuter = () => {      
   return (
@@ -19,10 +20,7 @@ const Approuter = () => {
         <Route path="/services" element={<ServicePage />} />
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/register" element={<Register/>}/>
-{/*         
-       
-        <Route path="" element={<Gallery />} />
-        <Route path="" element={<Team />} /> */}
+        <Route path="/team" element={<TeamPage/>}/>
         <Route path="/login" element={<Login/>}></Route>
       </Routes>
     </Router>

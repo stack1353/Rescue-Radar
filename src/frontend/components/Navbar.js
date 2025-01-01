@@ -12,7 +12,7 @@ const Navbar =()=>{
           <a href="/services">SERVICES</a>
           <a href="#gallery">GALLERY</a>
           <a href="/about">ABOUT US</a>
-          <a href="#team">OUR TEAM</a>
+          <a href="/team">OUR TEAM</a>
          <a href="/login"> RESCUER LOGIN</a>
          </nav>
       </header>)

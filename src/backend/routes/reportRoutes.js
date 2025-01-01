@@ -83,6 +83,29 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+// GET /api/report/approved/count - Fetch the total number of approved reports
+router.get("/approved/count", async (req, res) => {
+  try {
+    const count = await Report.countDocuments({ isApproved: true }); // Filter by approved requests
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+// GET /api/report/count - Fetch the total number of reports
+router.get("/count", async (req, res) => {
+  console.log("Fetching total report count...");
+  try {
+    const count = await Report.countDocuments();
+    console.log("Total count fetched:", count);
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error("Error fetching report count:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 module.exports = router;
