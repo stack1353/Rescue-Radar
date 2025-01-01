@@ -1,3 +1,5 @@
+
+
 body {
   margin: 0; /* Removes default margin from the body */
   padding: 0; /* Removes default padding from the body */
@@ -56,7 +58,15 @@ body {
   color: #333;
   font-weight: bold;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
+
+.nav a:hover {
+  color: #ff8800; /* Change to blue on hover */
+ /* Underline on hover */
+  transform: scale(1.1); /* Slight zoom effect */
+}
+
 
 .main {
   background-color: #f0ffe0;

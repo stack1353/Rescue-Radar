@@ -1,4 +1,18 @@
 import React, { useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix for missing map marker icons in Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
 const HelpAnimal = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -65,10 +79,7 @@ const HelpAnimal = () => {
   return (
     <div>
       {/* Main Button */}
-      <button
-        className="action-button"
-        onClick={() => setIsPopupOpen(true)}
-      >
+      <button className="action-button" onClick={() => setIsPopupOpen(true)}>
         Help Animal Now
       </button>
 
@@ -105,9 +116,25 @@ const HelpAnimal = () => {
               <div style={popupStyles.field}>
                 <label>Location:</label>
                 {location.lat && location.lon ? (
-                  <p>
-                    Latitude: {location.lat}, Longitude: {location.lon}
-                  </p>
+                  <>
+                    <p>
+                      Latitude: {location.lat}, Longitude: {location.lon}
+                    </p>
+                    {/* Map Display */}
+                    <MapContainer
+                      center={[location.lat, location.lon]}
+                      zoom={13}
+                      style={{ height: "200px", width: "100%" }}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      />
+                      <Marker position={[location.lat, location.lon]}>
+                        <Popup>Your Current Location</Popup>
+                      </Marker>
+                    </MapContainer>
+                  </>
                 ) : (
                   <button type="button" onClick={fetchLocation}>
                     Get Current Location
