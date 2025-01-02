@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios"; // Import Axios for API requests
+import axios from "axios";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 const Rescuer = ({ isOpen, onClose }) => {
   const [rescuerName, setRescuerName] = useState("");
-  const [email, setEmail] = useState(""); // New state for email
+  const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
   const [availability, setAvailability] = useState("Available");
   const [category, setCategory] = useState("Domestic");
@@ -15,34 +17,34 @@ const Rescuer = ({ isOpen, onClose }) => {
     Wild: ["Snake", "Deer", "Elephant", "Other"],
   };
 
-  // Fetch the rescuer's location
-  const fetchLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) =>
-          setLocation({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          }),
-        (error) => alert("Unable to fetch location: " + error.message)
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
-    }
+  // Custom hook to set location by clicking on the map
+  const LocationMarker = () => {
+    useMapEvents({
+      click(e) {
+        setLocation({
+          lat: e.latlng.lat,
+          lon: e.latlng.lng,
+        });
+      },
+    });
+
+    return location.lat && location.lon ? (
+      <Marker position={[location.lat, location.lon]} />
+    ) : null;
   };
 
   // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!rescuerName || !email || !contact || !subcategory) {
+    if (!rescuerName || !email || !contact || !subcategory || !location.lat || !location.lon) {
       alert("Please fill in all the required fields.");
       return;
     }
 
     const rescuerData = {
       rescuerName,
-      email, // Include email in the submission
+      email,
       contact,
       availability,
       category,
@@ -71,7 +73,6 @@ const Rescuer = ({ isOpen, onClose }) => {
       <div style={popupStyles.popup}>
         <h2>Rescuer Information</h2>
         <form onSubmit={handleSubmit}>
-          {/* Rescuer Name */}
           <div style={popupStyles.field}>
             <label>Rescuer Name:</label>
             <input
@@ -83,7 +84,6 @@ const Rescuer = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Email */}
           <div style={popupStyles.field}>
             <label>Email:</label>
             <input
@@ -95,7 +95,6 @@ const Rescuer = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Contact Number */}
           <div style={popupStyles.field}>
             <label>Contact Number:</label>
             <input
@@ -107,7 +106,6 @@ const Rescuer = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Availability */}
           <div style={popupStyles.field}>
             <label>Availability:</label>
             <select
@@ -119,7 +117,6 @@ const Rescuer = ({ isOpen, onClose }) => {
             </select>
           </div>
 
-          {/* Rescuer Category */}
           <div style={popupStyles.field}>
             <label>Category:</label>
             <select
@@ -134,7 +131,6 @@ const Rescuer = ({ isOpen, onClose }) => {
             </select>
           </div>
 
-          {/* Subcategory */}
           <div style={popupStyles.field}>
             <label>Type:</label>
             <select
@@ -153,21 +149,30 @@ const Rescuer = ({ isOpen, onClose }) => {
             </select>
           </div>
 
-          {/* Location */}
           <div style={popupStyles.field}>
             <label>Location:</label>
+            <div style={{ height: "200px", marginBottom: "10px" }}>
+              <MapContainer
+                center={[12.9716, 77.5946]} // Default to Bangalore's coordinates
+                zoom={13}
+                style={{ height: "100%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                />
+                <LocationMarker />
+              </MapContainer>
+            </div>
             {location.lat && location.lon ? (
               <p>
-                Latitude: {location.lat}, Longitude: {location.lon}
+                Selected Location: Latitude {location.lat}, Longitude {location.lon}
               </p>
             ) : (
-              <button type="button" onClick={fetchLocation}>
-                Get Current Location
-              </button>
+              <p>Click on the map to select your location.</p>
             )}
           </div>
 
-          {/* Submit Button */}
           <div style={popupStyles.actions}>
             <button type="submit">Submit</button>
             <button
@@ -184,7 +189,6 @@ const Rescuer = ({ isOpen, onClose }) => {
   );
 };
 
-// Styles for the popup
 const popupStyles = {
   overlay: {
     position: "fixed",
@@ -202,7 +206,7 @@ const popupStyles = {
     background: "#fff",
     padding: "20px",
     borderRadius: "8px",
-    width: "400px",
+    width: "500px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
   field: {

@@ -1,40 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 const HelpAnimal = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [photo, setPhoto] = useState(null);
   const [woundDetails, setWoundDetails] = useState("");
   const [location, setLocation] = useState({ lat: null, lon: null });
+  const [defaultLocation, setDefaultLocation] = useState([13.0827, 80.2707]); // Default to Chennai
+
+  // Fetch user's current location when the component mounts
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setDefaultLocation([latitude, longitude]);
+          setLocation({ lat: latitude, lon: longitude });
+        },
+        (error) => {
+          console.error("Unable to fetch location: " + error.message);
+        }
+      );
+    }
+  }, []);
 
   // Handle file upload
   const handlePhotoUpload = (event) => {
     setPhoto(event.target.files[0]);
   };
 
-  // Get user's current location
-  const fetchLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          });
-        },
-        (error) => {
-          alert("Unable to fetch location: " + error.message);
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
-    }
-  };
-
   // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Form validation
     if (!photo || !woundDetails || !location.lat || !location.lon) {
       alert("Please complete all fields before submitting.");
       return;
@@ -53,7 +52,7 @@ const HelpAnimal = () => {
 
       if (response.ok) {
         alert("Report submitted successfully!");
-        setIsPopupOpen(false); // Close popup after submission
+        handleClosePopup(); // Close and reset the form
       } else {
         alert("Failed to submit the report.");
       }
@@ -62,13 +61,31 @@ const HelpAnimal = () => {
     }
   };
 
+  // Handle closing the popup and resetting form
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setPhoto(null);
+    setWoundDetails("");
+    setLocation({ lat: null, lon: null });
+  };
+
+  // Component for handling map events
+  const LocationMarker = () => {
+    useMapEvents({
+      click(e) {
+        setLocation({ lat: e.latlng.lat, lon: e.latlng.lng });
+      },
+    });
+
+    return location.lat && location.lon ? (
+      <Marker position={[location.lat, location.lon]}></Marker>
+    ) : null;
+  };
+
   return (
     <div>
       {/* Main Button */}
-      <button
-        className="action-button"
-        onClick={() => setIsPopupOpen(true)}
-      >
+      <button className="action-button" onClick={() => setIsPopupOpen(true)}>
         Help Animal Now
       </button>
 
@@ -101,17 +118,28 @@ const HelpAnimal = () => {
                 />
               </div>
 
-              {/* Location Fetch */}
+              {/* Graphical Location Input */}
               <div style={popupStyles.field}>
                 <label>Location:</label>
+                <div style={{ height: "200px", marginBottom: "15px" }}>
+                  <MapContainer
+                    center={defaultLocation}
+                    zoom={13}
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <LocationMarker />
+                  </MapContainer>
+                </div>
                 {location.lat && location.lon ? (
                   <p>
-                    Latitude: {location.lat}, Longitude: {location.lon}
+                    Selected Location: Latitude: {location.lat}, Longitude: {location.lon}
                   </p>
                 ) : (
-                  <button type="button" onClick={fetchLocation}>
-                    Get Current Location
-                  </button>
+                  <p>Please click on the map to select a location.</p>
                 )}
               </div>
 
@@ -120,7 +148,7 @@ const HelpAnimal = () => {
                 <button type="submit">Submit</button>
                 <button
                   type="button"
-                  onClick={() => setIsPopupOpen(false)}
+                  onClick={handleClosePopup}
                   style={{ marginLeft: "10px" }}
                 >
                   Cancel
