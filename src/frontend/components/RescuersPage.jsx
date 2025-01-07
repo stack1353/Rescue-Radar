@@ -19,9 +19,14 @@ const RescuersPage = () => {
     fetchRescues();
   }, []);
 
+  const handleViewLocation = (lat, lon) => {
+    const url = `https://www.google.com/maps?q=${lat},${lon}`;
+    window.open(url, "_blank");
+  };
+
   return (
     <div className="rescuer-page">
-      <h1>Rescue Requests</h1>
+      <h1>OUR RESCUERS</h1>
       {error && <p className="error">{error}</p>}
 
       <div className="table-container">
@@ -29,28 +34,31 @@ const RescuersPage = () => {
           <thead>
             <tr>
               <th>Rescuer Name</th>
+              <th>Email</th>
               <th>Contact</th>
               <th>Availability</th>
               <th>Category</th>
               <th>Subcategory</th>
               <th>Location</th>
-              {/* <th>Status</th>
-              <th>Action</th> */}
             </tr>
           </thead>
           <tbody>
             {rescues.map((rescue) => (
               <tr key={rescue._id}>
                 <td>{rescue.rescuerName}</td>
+                <td>{rescue.email}</td>
                 <td>{rescue.contact}</td>
                 <td>{rescue.availability}</td>
                 <td>{rescue.category}</td>
                 <td>{rescue.subcategory}</td>
                 <td>
-                  Lat: {rescue.location.lat}, Lon: {rescue.location.lon}
+                  <button
+                    className="view-location-button"
+                    onClick={() => handleViewLocation(rescue.location.lat, rescue.location.lon)}
+                  >
+                    View Location
+                  </button>
                 </td>
-                {/* <td>{rescue.status}</td>
-                <td>{rescue.action}</td> */}
               </tr>
             ))}
           </tbody>
@@ -106,6 +114,19 @@ const RescuersPage = () => {
 
         .rescuer-table tr:hover {
           background-color: #f0f0f0;
+        }
+
+        .view-location-button {
+          padding: 8px 12px;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        .view-location-button:hover {
+          background-color: #218838;
         }
 
         .error {
