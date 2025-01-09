@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import axios from "axios";
 
 const HelpAnimal = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -8,6 +9,9 @@ const HelpAnimal = () => {
   const [woundDetails, setWoundDetails] = useState("");
   const [location, setLocation] = useState({ lat: null, lon: null });
   const [defaultLocation, setDefaultLocation] = useState([13.0827, 80.2707]); // Default to Chennai
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [classificationResult, setClassificationResult] = useState(null);
 
   // Fetch user's current location when the component mounts
   useEffect(() => {
@@ -44,20 +48,25 @@ const HelpAnimal = () => {
     formData.append("woundDetails", woundDetails);
     formData.append("location", JSON.stringify(location));
 
+    setIsLoading(true);
+    setError(null);
+    setClassificationResult(null);
+
     try {
-      const response = await fetch("http://localhost:5000/api/report", {
-        method: "POST",
-        body: formData,
+      const response = await axios.post("http://localhost:5000/api/report", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      if (response.ok) {
-        alert("Report submitted successfully!");
-        handleClosePopup(); // Close and reset the form
-      } else {
-        alert("Failed to submit the report.");
-      }
-    } catch (error) {
-      alert("An error occurred: " + error.message);
+      setClassificationResult(response.data.animalName || "Unknown animal");
+      alert("Report submitted successfully!");
+      handleClosePopup();
+    } catch (err) {
+      console.error("Error submitting report:", err);
+      setError("Failed to submit the report. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -145,7 +154,9 @@ const HelpAnimal = () => {
 
               {/* Submit Button */}
               <div style={popupStyles.actions}>
-                <button type="submit">Submit</button>
+                <button type="submit" disabled={isLoading}>
+                  {isLoading ? "Submitting..." : "Submit"}
+                </button>
                 <button
                   type="button"
                   onClick={handleClosePopup}
@@ -155,7 +166,18 @@ const HelpAnimal = () => {
                 </button>
               </div>
             </form>
+
+            {/* Error Message */}
+            {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
           </div>
+        </div>
+      )}
+
+      {/* Classification Result */}
+      {classificationResult && (
+        <div style={popupStyles.result}>
+          <h3>Classification Result:</h3>
+          <p>{classificationResult}</p>
         </div>
       )}
     </div>
@@ -188,6 +210,11 @@ const popupStyles = {
   },
   actions: {
     textAlign: "right",
+  },
+  result: {
+    marginTop: "20px",
+    textAlign: "center",
+    color: "#333",
   },
 };
 

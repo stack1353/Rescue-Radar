@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const axios = require("axios");
 const Report = require("../models/Report");
 
 const router = express.Router();
@@ -26,16 +27,34 @@ router.post("/", upload.single("photo"), async (req, res) => {
       return res.status(400).json({ message: "Photo is required" });
     }
 
+    // Call the Flask API for classification
+    const flaskResponse = await axios.post(
+      "http://localhost:5000/classify",
+      { file: req.file },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    const { predicted_class } = flaskResponse.data;
+
+    // Save the report in MongoDB
     const newReport = new Report({
       photo: req.file.path,
       woundDetails,
       location: locationParsed,
+      animalName: predicted_class, // Add classification result
     });
 
     await newReport.save();
-    res.status(201).json({ message: "Report submitted successfully" });
+    res.status(201).json({
+      message: "Report submitted successfully",
+      report: newReport,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error in report submission:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -65,6 +84,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// DELETE /api/report/:id - Delete a specific report
 router.delete("/:id", async (req, res) => {
   try {
     const reportId = req.params.id;
@@ -83,6 +103,7 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 // GET /api/report/approved/count - Fetch the total number of approved reports
 router.get("/approved/count", async (req, res) => {
   try {
@@ -93,6 +114,7 @@ router.get("/approved/count", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 // GET /api/report/count - Fetch the total number of reports
 router.get("/count", async (req, res) => {
   console.log("Fetching total report count...");
@@ -105,7 +127,5 @@ router.get("/count", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-
 
 module.exports = router;
